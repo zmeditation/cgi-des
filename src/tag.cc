@@ -1,3 +1,4 @@
+#include "dpcgi_pch.hh"
 #include "tag.hh"
 
 
@@ -48,9 +49,8 @@ std::ostream& operator<<(std::ostream& wStream, const tag& wTag)
 } // namespace dpcgi
 
 
-//std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag)
-//{
+// std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag)
+// {
 //    std::cout << "Out!\n";
-//    return wStream << wTag;
-//}
-
+//    return dpcgi::operator<<(wStream, wTag);
+// }

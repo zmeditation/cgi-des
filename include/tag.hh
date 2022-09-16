@@ -38,7 +38,7 @@ std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag);
 }; // namespace dpcgi
 
 
-//std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag);
+// std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag);
 
 
 #endif // !DESPAIR_CGI_TAG_HH

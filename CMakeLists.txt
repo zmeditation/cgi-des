@@ -19,8 +19,13 @@ endif()
 project(despair-cgi VERSION 1.0)
 
 add_library( despair-cgi
-    src/tag.cc
+    "src/html_document.cc"
+    "src/tag.cc"
     )
+
+target_precompile_headers( despair-cgi
+    PRIVATE "src/dpcgi_pch.hh"
+)
 
 target_include_directories( despair-cgi
     PUBLIC "include"
@@ -28,7 +33,7 @@ target_include_directories( despair-cgi
 
 
 add_executable( example
-    src/despair-cgi.cc
+    "examples/despair-cgi.cc"
     )
 
 target_link_libraries( example
