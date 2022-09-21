@@ -35,33 +35,41 @@ enum class result : uint32_t {
     success = 0, err_op_denied    
 };
 
+typedef std::string string;
+
 class tag
 {
 public:
-    static tag parse(const std::string& wStr);
+    static tag parse(const string& wStr);
 
     tag() noexcept;
-    tag(const std::string& wName);
+    tag(const string& wName);
     virtual ~tag() noexcept;
 
-    void add_attrib(const std::string& wName, const std::string& wValue = "");
-    std::string end();
+    void add_attrib(const string& wName, const string& wValue = "");
+    string end() const noexcept;
 
-    inline const std::string& name() const noexcept { return name_; }
-    inline void name(const std::string& wName) noexcept { name_ = wName; }
+    string str() const noexcept;
+
+    inline const string& name() const noexcept { return name_; }
+    inline void name(const string& wName) noexcept { name_ = wName; }
+
+    inline const string& val() const noexcept { return val_; }
+    inline void val(const string& wVal) noexcept { val_ = wVal; }
     
     inline bool self_closed() const noexcept { return selfClosed_; }
-    inline bool self_closed(bool wYesNo) noexcept { selfClosed_ = wYesNo; }
+    inline void self_closed(bool wYesNo) noexcept { selfClosed_ = wYesNo; }
     
     inline bool empty() const noexcept { return name_.empty(); }
+    inline bool unnamed() const noexcept { return name_.empty(); }
 
     friend std::ostream& operator<<(std::ostream&, const tag&);
 
 protected:
-    std::string name_;
-    struct attribute { std::string name, value; };
+    string name_;
+    struct attribute { string name, value; };
     std::vector<attribute> attribs_;
-    std::string value;
+    string val_;
     bool selfClosed_;
 };
 

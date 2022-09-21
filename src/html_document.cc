@@ -51,7 +51,7 @@ result html_document::add_tag(const tag& wTag) noexcept
 result html_document::add_tag(tag&& wTag) noexcept{}
 
 
-std::string html_document::str() const noexcept { return EMPTY; }
+string html_document::str() const noexcept { return EMPTY; }
 
 
 /*static*/ bool html_document::tagIsForbidden(const tag& wTag)
@@ -60,7 +60,7 @@ std::string html_document::str() const noexcept { return EMPTY; }
 }
 
 
-/*static*/ const std::set<std::string> html_document::forbiddenTags_ = {
+/*static*/ const std::set<string> html_document::forbiddenTags_ = {
     "body", "head", "html"
 };
 

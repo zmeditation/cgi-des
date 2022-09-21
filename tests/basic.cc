@@ -7,6 +7,21 @@ TEST(dpcgi, tag) {
     EXPECT_TRUE(myTag.name().empty());
     myTag = dpcgi::tag("html");
     EXPECT_FALSE(myTag.name().empty());
+    EXPECT_EQ(myTag.str(), "<html></html>");
+}
+
+TEST(dpcgi, complete_html_tag) {
+    dpcgi::tag htmlTag("html");
+    dpcgi::tag headTag("head");
+    dpcgi::tag bodyTag("body");
+    htmlTag.val(
+        headTag.str() + '\n' + bodyTag.str()
+    );
+    const dpcgi::string HtmlTagVal = 
+        "<head></head>\n"
+        "<body></body>"
+        ;
+    EXPECT_EQ(htmlTag.val(), HtmlTagVal);
 }
 
 

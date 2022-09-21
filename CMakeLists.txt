@@ -36,10 +36,6 @@ if( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} )
     message( FATAL_ERROR "Binary directory should not be the same as source directory, please specify a different one!" )
 endif()
 
-if(WIN32)
-    set ( ExecutableExt CACHE INTERNAL ".exe" FORCE )
-endif()
-
 
 project(despair-cgi VERSION 1.0) ########################################################
 add_subdirectory(googletest)
@@ -60,20 +56,20 @@ target_include_directories( despair-cgi
 
 #########################################################################################
 
-add_executable( test_basic
+add_executable( runtests
     "tests/basic.cc"
     )
 
-target_include_directories( test_basic
+target_include_directories( runtests
     PUBLIC "include"
     PUBLIC "googletest/googletest/include"
 )
 
-target_link_libraries( test_basic
+target_link_libraries( runtests
     PUBLIC despair-cgi gtest gtest_main
 )
 
-add_test(NAME test_basic COMMAND test_basic${ExecutableExt})
+add_test(NAME runtests COMMAND runtests)
 
 #########################################################################################
 

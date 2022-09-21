@@ -28,7 +28,7 @@ SOFTWARE.
 DPCGI_NAMESPACE_BEGIN //-----------------------------------------------------------------
 
 
-/*static*/ tag tag::parse(const std::string& wStr)
+/*static*/ tag tag::parse(const string& wStr)
 {
     return tag();
 }
@@ -37,23 +37,38 @@ DPCGI_NAMESPACE_BEGIN //--------------------------------------------------------
 tag::tag() noexcept : selfClosed_(false) {}
 
 
-tag::tag(const std::string& wName) : name_(wName), selfClosed_(false)
+tag::tag(const string& wName) : name_(wName), selfClosed_(false)
 {}
 
 
 /*virtual*/ tag::~tag() noexcept {}
 
 
-void tag::add_attrib(const std::string& wName, const std::string& wValue)
+void tag::add_attrib(const string& wName, const string& wValue)
 {
     attribs_.push_back({ wName, wValue });
 }
 
 
-std::string tag::end()
+string tag::end() const noexcept
 {
     if(selfClosed_) return "";
     return "</" + name_ + '>';
+}
+
+
+string tag::str() const noexcept
+{
+    string ret;
+    ret.reserve(32);
+    ret += '<' + name_;
+    for(const auto& attrib : attribs_) {
+        ret += ' ' + attrib.name + "=\"" + attrib.value + "\"";
+    }
+    if(selfClosed_) ret += " />";
+    else ret += '>' + val_ + this->end();
+    
+    return ret;
 }
 
 

@@ -38,17 +38,17 @@ public:
 
     result add_tag(const tag& wTag) noexcept;
     result add_tag(tag&& wTag) noexcept;
-    std::string str() const noexcept;
+    string str() const noexcept;
     
-    inline const std::string& title() const noexcept { return title_; }
-    inline void title(const std::string& wTitle) noexcept { title_ = wTitle; }
+    inline const string& title() const noexcept { return title_; }
+    inline void title(const string& wTitle) noexcept { title_ = wTitle; }
 
 private:
     static bool tagIsForbidden(const tag& wTag);
-    static const std::set<std::string> forbiddenTags_;
+    static const std::set<string> forbiddenTags_;
 
     std::vector<tag> tags_;
-    std::string title_;
+    string title_;
 };
 
 }
