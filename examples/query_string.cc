@@ -21,40 +21,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
-#include <html_document.hh>
-#include <tag.hh>
-#include <gtest/gtest.h>
+#include <query_string.hh>
+#include <iostream>
+#include <sstream>
 
-TEST(dpcgi, tag) {
-    dpcgi::tag myTag;
-    EXPECT_TRUE(myTag.name().empty());
-    myTag = dpcgi::tag("html");
-    EXPECT_FALSE(myTag.name().empty());
-    EXPECT_EQ(myTag.str(), "<html></html>");
-}
+int main()
+{
+    dpcgi::query_string qs;
+    std::ostringstream oss;
+    if(!qs.empty()) oss << qs.queries().begin()->first << " = " << qs.queries().begin()->second;
+    else oss.str("[empty]");
 
-TEST(dpcgi, complete_html_tag) {
-    dpcgi::tag htmlTag("html");
-    dpcgi::tag headTag("head");
-    dpcgi::tag bodyTag("body");
-    htmlTag.val(
-        headTag.str() + '\n' + bodyTag.str()
-    );
-    const dpcgi::string HtmlTagVal = 
-        "<head></head>\n"
-        "<body></body>"
-        ;
-    EXPECT_EQ(htmlTag.val(), HtmlTagVal);
-}
+    std::cout << "Content-type:text/html\r\n\r\n";
 
-
-TEST(dpcgi, html_document) {
-    dpcgi::html_document doc;
-    auto tag_Html = dpcgi::tag("html");
-    auto tag_Head = dpcgi::tag("head");
-    auto tag_Body = dpcgi::tag("body");
-
-    EXPECT_EQ(doc.add_tag(tag_Html), dpcgi::result::err_op_denied);
-    EXPECT_EQ(doc.add_tag(tag_Head), dpcgi::result::err_op_denied);
-    EXPECT_EQ(doc.add_tag(tag_Body), dpcgi::result::err_op_denied);
+    std::cout << "<html>\n";
+    std::cout << "<head>\n";
+    std::cout << "<title>Query String Example</title>\n";
+    std::cout << "</head>\n";
+    std::cout << "<body>\n";
+    std::cout << "<h1>Query Entries</h1>\n";
+    for(const auto& query : qs.queries()) {
+        std::cout << "<h2>k=" << query.first << " v=" << query.second << "</h2>\n";
+    } // endfor
+    std::cout << "</body>\n";
+    std::cout << "</html>\n";
+    
+    return 0;
 }

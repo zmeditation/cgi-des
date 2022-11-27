@@ -24,8 +24,8 @@ SOFTWARE.
 #ifndef DESPAIR_CGI_TAG_HH
 #define DESPAIR_CGI_TAG_HH
 
+#include "string.hh"
 #include <ostream>
-#include <string>
 #include <vector>
 
 
@@ -35,7 +35,7 @@ enum class result : uint32_t {
     success = 0, err_op_denied    
 };
 
-typedef std::string string;
+
 
 class tag
 {
@@ -77,7 +77,7 @@ protected:
 std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag);
 
 
-}; // namespace dpcgi
+} // namespace dpcgi
 
 
 // std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag);

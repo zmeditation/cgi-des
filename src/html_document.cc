@@ -37,7 +37,7 @@ R"(<html>
 DPCGI_NAMESPACE_BEGIN
 
 
-html_document::html_document() noexcept {}
+html_document::html_document() noexcept : title_("dpcgi_untitled") {}
 html_document::~html_document() noexcept {}
 
 result html_document::add_tag(const tag& wTag) noexcept
@@ -51,7 +51,20 @@ result html_document::add_tag(const tag& wTag) noexcept
 result html_document::add_tag(tag&& wTag) noexcept{}
 
 
-string html_document::str() const noexcept { return EMPTY; }
+string html_document::str() const noexcept
+{
+    std::ostringstream oss;
+    oss << "Content-type:text/html\r\n\r\n";
+    oss << "<html>\n";
+    oss << "<head>\n";
+    oss << "<title>" << title_ << "</title>";
+    oss << "</head>\n";
+    oss << "<body>\n";
+    for(const auto& tag : tags_) oss << tag.str();
+    oss << "</body>\n";
+    
+    oss << "</html>\n";
+}
 
 
 /*static*/ bool html_document::tagIsForbidden(const tag& wTag)

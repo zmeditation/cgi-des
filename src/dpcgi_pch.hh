@@ -25,6 +25,7 @@ SOFTWARE.
 #define DPCGI_PCH_HH
 
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <vector>
 

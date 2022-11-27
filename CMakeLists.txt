@@ -43,6 +43,7 @@ add_subdirectory(googletest)
 
 add_library( despair-cgi
     "src/html_document.cc"
+    "src/query_string.cc"
     "src/tag.cc"
     )
 
@@ -58,6 +59,7 @@ target_include_directories( despair-cgi
 
 add_executable( runtests
     "tests/basic.cc"
+    "tests/query_string.cc"
     )
 
 target_include_directories( runtests
@@ -76,7 +78,13 @@ add_test(NAME runtests COMMAND runtests)
 add_executable( example
     "examples/despair-cgi.cc"
     )
-
 target_link_libraries( example
+    PUBLIC despair-cgi
+    )
+
+add_executable( query_string
+    "examples/query_string.cc"
+    )
+target_link_libraries( query_string
     PUBLIC despair-cgi
     )
