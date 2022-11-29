@@ -21,20 +21,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
-#include "html_document.hh"
-#include "tag.hh"
-#include <iostream>
+#include "tests_pch.hh"
+
+#define TAG_NAME_IMG_BEG "img"
+#define TAG_NAME_IMG_END "</img>"
 
 
-int main()
-{
-    std::cout << "Content-type:text/html\r\n\r\n";
+TEST(dpcgi, tag_html_empty) {
+    dpcgi::tag myTag;
+    EXPECT_TRUE(myTag.eol());
+    EXPECT_TRUE(myTag.name().empty());
+    
+    myTag = dpcgi::tag("html");
+    EXPECT_FALSE(myTag.name().empty());
+    EXPECT_EQ(myTag.str(), "<html></html>");
 
-    dpcgi::html_document doc;
-    std::cout << doc.str() << '\n';
+    myTag.eol(false);
+    EXPECT_FALSE(myTag.eol());
+}
 
-    dpcgi::tag tag("dummy_tag");
-    tag.add_attrib("first_attrib", "no value");
-    std::cout << tag << tag.end();
-    return 0;
+
+TEST(dpcgi, tag_img) {
+    dpcgi::tag imgTag(TAG_NAME_IMG_BEG);
+    imgTag.add_attrib("src", "http://img.co/star.png");
+
+    EXPECT_EQ(imgTag.name(), TAG_NAME_IMG_BEG);
+    EXPECT_EQ(imgTag.end(), TAG_NAME_IMG_END);
+    EXPECT_TRUE(imgTag.eol());
 }

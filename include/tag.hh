@@ -59,6 +59,10 @@ public:
     
     inline bool self_closed() const noexcept { return selfClosed_; }
     inline void self_closed(bool wYesNo) noexcept { selfClosed_ = wYesNo; }
+
+    //$ EOL: if set, an EOL will be inserted to the end of ::str() result.
+    inline bool eol() const noexcept { return hasEol_; }
+    inline void eol(bool wYesNo) noexcept { hasEol_ = wYesNo; }
     
     inline bool empty() const noexcept { return name_.empty(); }
     inline bool unnamed() const noexcept { return name_.empty(); }
@@ -71,6 +75,7 @@ protected:
     std::vector<attribute> attribs_;
     string val_;
     bool selfClosed_;
+    bool hasEol_;
 };
 
 

@@ -60,31 +60,32 @@ target_include_directories( despair-cgi
 add_executable( runtests
     "tests/basic.cc"
     "tests/query_string.cc"
+    "tests/tag.cc"
     )
-
 target_include_directories( runtests
     PUBLIC "include"
     PUBLIC "googletest/googletest/include"
 )
-
 target_link_libraries( runtests
     PUBLIC despair-cgi gtest gtest_main
+)
+target_precompile_headers( runtests
+    PRIVATE tests/tests_pch.hh
 )
 
 add_test(NAME runtests COMMAND runtests)
 
 #########################################################################################
 
-add_executable( example
-    "examples/despair-cgi.cc"
+function(dpcgi_add_example)
+    add_executable( ${ARGV0}
+        "examples/eg-${ARGV0}.cc"
     )
-target_link_libraries( example
-    PUBLIC despair-cgi
+    target_link_libraries( ${ARGV0}
+        PUBLIC despair-cgi
     )
+endfunction()
 
-add_executable( query_string
-    "examples/query_string.cc"
-    )
-target_link_libraries( query_string
-    PUBLIC despair-cgi
-    )
+dpcgi_add_example(html_document)
+dpcgi_add_example(query_string)
+dpcgi_add_example(tag)

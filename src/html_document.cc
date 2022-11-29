@@ -24,6 +24,11 @@ SOFTWARE.
 #include "dpcgi_pch.hh"
 #include "html_document.hh"
 
+#define DPCGI_html_document_add_tag(wTag) \
+    if(_THIS::tagIsForbidden(wTag)) return result::err_op_denied;\
+    tags_.push_back(wTag);\
+    return result::success;
+
 constexpr const char* const EMPTY =
 R"(<html>
     <head>
@@ -48,7 +53,10 @@ result html_document::add_tag(const tag& wTag) noexcept
 }
 
 
-result html_document::add_tag(tag&& wTag) noexcept{}
+result html_document::add_tag(tag&& wTag) noexcept
+{
+    DPCGI_html_document_add_tag(wTag);
+}
 
 
 string html_document::str() const noexcept
@@ -61,9 +69,9 @@ string html_document::str() const noexcept
     oss << "</head>\n";
     oss << "<body>\n";
     for(const auto& tag : tags_) oss << tag.str();
-    oss << "</body>\n";
-    
-    oss << "</html>\n";
+    oss << "\n</body></html>\n";
+
+    return oss.str();
 }
 
 

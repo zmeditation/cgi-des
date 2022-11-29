@@ -21,8 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
-#include <query_string.hh>
-#include <gtest/gtest.h>
+#include "tests_pch.hh"
+
 
 TEST(dpcgi, query_string) {
     dpcgi::query_string queries;

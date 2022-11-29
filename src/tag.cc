@@ -34,10 +34,10 @@ DPCGI_NAMESPACE_BEGIN //--------------------------------------------------------
 }
 
 
-tag::tag() noexcept : selfClosed_(false) {}
+tag::tag() noexcept : selfClosed_(false), hasEol_(true) {}
 
 
-tag::tag(const string& wName) : name_(wName), selfClosed_(false)
+tag::tag(const string& wName) : name_(wName), selfClosed_(false), hasEol_(true)
 {}
 
 
