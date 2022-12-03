@@ -21,16 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
-#ifndef DPCGI_HTML_DOCUMENT_HH
-#define DPCGI_HTML_DOCUMENT_HH
+#ifndef DESPAIR_CGI_HTML_DOCUMENT_HH
+#define DESPAIR_CGI_HTML_DOCUMENT_HH
 
+#include "cookie.hh"
 #include "tag.hh"
 #include <set>
-#include <string>
+
 
 namespace dpcgi {
 
-class html_document
+class DPCGI_DLL_API html_document
 {
     typedef html_document _THIS;
 public:
@@ -40,17 +41,21 @@ public:
     result add_tag(tag&& wTag) noexcept;
     string str() const noexcept;
     
+    const std::vector<cookie*>& cookies() const noexcept { return cookies_; }
     inline const string& title() const noexcept { return title_; }
     inline void title(const string& wTitle) noexcept { title_ = wTitle; }
 
 private:
+    static const string CONTENT_TYPE_STR_;
+
     static bool tagIsForbidden(const tag& wTag);
     static const std::set<string> forbiddenTags_;
 
+    std::vector<cookie*> cookies_;
     std::vector<tag> tags_;
     string title_;
 };
 
 }
 
-#endif // !DPCGI_HTML_DOCUMENT_HH
+#endif // !DESPAIR_CGI_HTML_DOCUMENT_HH

@@ -20,6 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 cmake_minimum_required(VERSION 3.18)
+if (MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -Wconversion -pedantic -Werror)
+endif()
 
 
 set( CMAKE_CXX_STANDARD             11              )
@@ -37,31 +42,56 @@ if( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} )
 endif()
 
 
+set( DPCGI_SHARED_LIB False CACHE BOOL "Build as shared/DLL library")
+set( DPCGI_SHARED_LIB_SPEC "STATIC" )
+
+if( ${DPCGI_SHARED_LIB} )
+    set( DPCGI_SHARED_LIB_SPEC "SHARED" )
+endif()
+
+function(group_target)
+    set_target_properties( ${ARGV0} PROPERTIES FOLDER ${ARGV1} )
+endfunction()
+
+
 project(despair-cgi VERSION 1.0) ########################################################
+set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
+message( CHECK_START "Configure Google Test" )
+
 add_subdirectory(googletest)
+group_target( gtest "gtest" )
+group_target( gtest_main "gtest" )
+group_target( gmock "gtest" )
+group_target( gmock_main "gtest" )
+
+message( CHECK_PASS "Done." )
 
 
-add_library( despair-cgi
+add_library( despair-cgi ${DPCGI_SHARED_LIB_SPEC}
+    "src/cookie.cc"
+    "src/form.cc"
     "src/html_document.cc"
     "src/query_string.cc"
     "src/tag.cc"
-    )
-
+)
+if( ${DPCGI_SHARED_LIB} )
+    target_compile_definitions(despair-cgi PUBLIC DPCGI_EXPORT)
+endif()
 target_precompile_headers( despair-cgi
     PRIVATE "src/dpcgi_pch.hh"
 )
-
 target_include_directories( despair-cgi
-    PUBLIC "include"
-    )
+    PUBLIC "include/dpcgi"
+)
 
 #########################################################################################
 
 add_executable( runtests
     "tests/basic.cc"
+    "tests/cookie.cc"
     "tests/query_string.cc"
     "tests/tag.cc"
-    )
+)
 target_include_directories( runtests
     PUBLIC "include"
     PUBLIC "googletest/googletest/include"
@@ -81,11 +111,16 @@ function(dpcgi_add_example)
     add_executable( ${ARGV0}
         "examples/eg-${ARGV0}.cc"
     )
+    if( DPCGI_SHARED_LIB )
+        target_compile_definitions( ${ARGV0} PUBLIC DPCGI_IMPORT )
+    endif()
     target_link_libraries( ${ARGV0}
         PUBLIC despair-cgi
     )
+    group_target( ${ARGV0} "exe_examples" )
 endfunction()
 
+dpcgi_add_example(form)
 dpcgi_add_example(html_document)
 dpcgi_add_example(query_string)
 dpcgi_add_example(tag)

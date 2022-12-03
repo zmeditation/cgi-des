@@ -26,26 +26,50 @@ SOFTWARE.
 #define TAG_NAME_IMG_BEG "img"
 #define TAG_NAME_IMG_END "</img>"
 
+TEST(tag, parse) {
+    dpcgi::tag myTag = dpcgi::tag::parse("gibberish");
+    EXPECT_EQ(myTag.name(), "a");
+}
 
-TEST(dpcgi, tag_html_empty) {
+
+TEST(tag, html_empty) {
     dpcgi::tag myTag;
     EXPECT_TRUE(myTag.eol());
     EXPECT_TRUE(myTag.name().empty());
     
     myTag = dpcgi::tag("html");
     EXPECT_FALSE(myTag.name().empty());
-    EXPECT_EQ(myTag.str(), "<html></html>");
+    EXPECT_EQ(myTag.name(), "html");
+    EXPECT_EQ(myTag.end(), "</html>");
+    EXPECT_EQ(myTag.str(), "<html> </html>\n");
+    
+    myTag.is_child(false);
+    EXPECT_EQ(myTag.str(), "<html></html>\n");
 
     myTag.eol(false);
     EXPECT_FALSE(myTag.eol());
+    EXPECT_EQ(myTag.str(), "<html></html>");
 }
 
 
-TEST(dpcgi, tag_img) {
+TEST(tag, img) {
     dpcgi::tag imgTag(TAG_NAME_IMG_BEG);
     imgTag.add_attrib("src", "http://img.co/star.png");
 
     EXPECT_EQ(imgTag.name(), TAG_NAME_IMG_BEG);
     EXPECT_EQ(imgTag.end(), TAG_NAME_IMG_END);
     EXPECT_TRUE(imgTag.eol());
+    EXPECT_TRUE(imgTag.is_child());
+}
+
+
+TEST(dpcgi, tag_form) {
+    dpcgi::form emptyForm;
+    EXPECT_EQ(emptyForm.name(), "form");
+    EXPECT_EQ(emptyForm.end(), "</form>");
+    EXPECT_TRUE(emptyForm.is_child());
+
+    emptyForm.multipart_data();
+    const auto MultipartAttrib = emptyForm.find_attrib("enctype");
+    EXPECT_EQ(MultipartAttrib->value, "multipart/form-data");
 }

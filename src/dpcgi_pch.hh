@@ -24,6 +24,7 @@ SOFTWARE.
 #ifndef DPCGI_PCH_HH
 #define DPCGI_PCH_HH
 
+#include <algorithm>
 #include <ostream>
 #include <sstream>
 #include <string>

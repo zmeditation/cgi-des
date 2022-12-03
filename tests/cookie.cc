@@ -23,29 +23,15 @@ SOFTWARE.
 ****************************************************************************************/
 #include "tests_pch.hh"
 
-
-TEST(dpcgi, complete_html_tag) {
-    dpcgi::tag htmlTag("html");
-    dpcgi::tag headTag("head");
-    dpcgi::tag bodyTag("body");
-    htmlTag.val(
-        headTag.str() + '\n' + bodyTag.str()
-    );
-    const dpcgi::string HtmlTagVal = 
-        "<head> </head>\n\n"
-        "<body> </body>\n"
-        ;
-    EXPECT_EQ(htmlTag.val(), HtmlTagVal);
+TEST(cookie, empty_cookie) {
+    dpcgi::cookie cookie;
+    EXPECT_TRUE(cookie.empty());
 }
 
-
-TEST(dpcgi, html_document) {
-    dpcgi::html_document doc;
-    auto tag_Html = dpcgi::tag("html");
-    auto tag_Head = dpcgi::tag("head");
-    auto tag_Body = dpcgi::tag("body");
-
-    EXPECT_EQ(doc.add_tag(tag_Html), dpcgi::result::err_op_denied);
-    EXPECT_EQ(doc.add_tag(tag_Head), dpcgi::result::err_op_denied);
-    EXPECT_EQ(doc.add_tag(tag_Body), dpcgi::result::err_op_denied);
+TEST(cookie, dummy) {
+    dpcgi::cookie dummyCookie;
+    dummyCookie.add_entry("username", "kql2");
+    const auto FirstEntry = dummyCookie.entries().begin();
+    EXPECT_EQ(FirstEntry->first, "username");
+    EXPECT_EQ(FirstEntry->second, "kql2");
 }

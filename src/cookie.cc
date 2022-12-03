@@ -21,31 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
-#ifndef DESPAIR_CGI_QUERY_STRING_HH
-#define DESPAIR_CGI_QUERY_STRING_HH
-#include "string.hh"
-#include <unordered_map>
+#include "dpcgi_pch.hh"
+#include "cookie.hh"
 
-namespace dpcgi {
 
-class query_string
+DPCGI_NAMESPACE_BEGIN
+
+
+DPCGI_DLL_API cookie::cookie() noexcept {}
+DPCGI_DLL_API cookie::~cookie() noexcept {}
+
+
+DPCGI_DLL_API void cookie::add_entry(const string& wName, const string& wValue) noexcept
 {
-public:
-    typedef std::unordered_map<string, string> string_table;
+    entries_.insert(std::make_pair(wName, wValue));
+}
 
-    query_string() noexcept;
-    ~query_string() noexcept;
 
-    inline const string_table& queries() const noexcept { return queries_; }
-    inline const char* raw() const noexcept { return raw_; }
-    inline size_t size() const noexcept { return queries_.size(); }
-    inline bool empty() const noexcept { return queries_.empty(); }
+DPCGI_DLL_API bool cookie::erase(const string& wName) noexcept
+{
+    return entries_.erase(wName);
+}
 
-private:
-    string_table queries_;
-    const char* raw_;
-}; // class query_string
 
-} // namespace dpcgi
-
-#endif // !DESPAIR_CGI_QUERY_STRING_HH
+DPCGI_NAMESPACE_END

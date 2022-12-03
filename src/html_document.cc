@@ -29,23 +29,14 @@ SOFTWARE.
     tags_.push_back(wTag);\
     return result::success;
 
-constexpr const char* const EMPTY =
-R"(<html>
-    <head>
-        <title>untitled</title>
-    </head>
-    <body>
-        <h2>Hello, jackass!</h2>
-    </body>
-</html>)";
 
 DPCGI_NAMESPACE_BEGIN
 
 
-html_document::html_document() noexcept : title_("dpcgi_untitled") {}
-html_document::~html_document() noexcept {}
+DPCGI_DLL_API html_document::html_document() noexcept : title_("dpcgi_untitled") {}
+DPCGI_DLL_API html_document::~html_document() noexcept {}
 
-result html_document::add_tag(const tag& wTag) noexcept
+DPCGI_DLL_API result html_document::add_tag(const tag& wTag) noexcept
 {
     if(_THIS::tagIsForbidden(wTag)) return result::err_op_denied;
     tags_.push_back(wTag);
@@ -53,35 +44,47 @@ result html_document::add_tag(const tag& wTag) noexcept
 }
 
 
-result html_document::add_tag(tag&& wTag) noexcept
+DPCGI_DLL_API result html_document::add_tag(tag&& wTag) noexcept
 {
     DPCGI_html_document_add_tag(wTag);
 }
 
 
-string html_document::str() const noexcept
+DPCGI_DLL_API string html_document::str() const noexcept
 {
     std::ostringstream oss;
-    oss << "Content-type:text/html\r\n\r\n";
-    oss << "<html>\n";
-    oss << "<head>\n";
-    oss << "<title>" << title_ << "</title>";
-    oss << "</head>\n";
-    oss << "<body>\n";
-    for(const auto& tag : tags_) oss << tag.str();
-    oss << "\n</body></html>\n";
+    oss << 
+        _THIS::CONTENT_TYPE_STR_ <<
+        "<html>\n" <<
+        "<head>\n " << 
+        "<title>" << title_ << "</title>" << "</head>\n" <<
+        "<body>\n"
+        ;
+    
+    for(const auto& tag : tags_)
+    {
+        if(tag.is_child()) oss << ' ';
+        oss << tag.str();
+    }
+    // endfor
+
+    oss << "</body></html>\n";
 
     return oss.str();
 }
 
 
-/*static*/ bool html_document::tagIsForbidden(const tag& wTag)
+/*static*/ DPCGI_DLL_API const string html_document::CONTENT_TYPE_STR_ 
+    = "Content-type:text/html\r\n\r\n";
+
+
+/*static*/ DPCGI_DLL_API bool html_document::tagIsForbidden(const tag& wTag)
 {
     return ( forbiddenTags_.find(wTag.name()) != forbiddenTags_.end() );
 }
 
 
-/*static*/ const std::set<string> html_document::forbiddenTags_ = {
+/*static*/ DPCGI_DLL_API const std::set<string> html_document::forbiddenTags_ = {
     "body", "head", "html"
 };
 

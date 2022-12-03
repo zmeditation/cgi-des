@@ -21,31 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
-#include "tests_pch.hh"
+#include "dpcgi_pch.hh"
+#include "form.hh"
 
 
-TEST(dpcgi, complete_html_tag) {
-    dpcgi::tag htmlTag("html");
-    dpcgi::tag headTag("head");
-    dpcgi::tag bodyTag("body");
-    htmlTag.val(
-        headTag.str() + '\n' + bodyTag.str()
-    );
-    const dpcgi::string HtmlTagVal = 
-        "<head> </head>\n\n"
-        "<body> </body>\n"
-        ;
-    EXPECT_EQ(htmlTag.val(), HtmlTagVal);
+DPCGI_NAMESPACE_BEGIN
+
+
+DPCGI_DLL_API form::form() noexcept : _SUPER("form"), submit_("input")
+{
+    submit_.add_attrib("type", "submit");
+    this->_SUPER::add_child(submit_);
 }
 
 
-TEST(dpcgi, html_document) {
-    dpcgi::html_document doc;
-    auto tag_Html = dpcgi::tag("html");
-    auto tag_Head = dpcgi::tag("head");
-    auto tag_Body = dpcgi::tag("body");
+DPCGI_DLL_API form::~form ()noexcept {}
 
-    EXPECT_EQ(doc.add_tag(tag_Html), dpcgi::result::err_op_denied);
-    EXPECT_EQ(doc.add_tag(tag_Head), dpcgi::result::err_op_denied);
-    EXPECT_EQ(doc.add_tag(tag_Body), dpcgi::result::err_op_denied);
+
+void form::multipart_data() noexcept
+{
+    this->_SUPER::add_attrib("enctype", "multipart/form-data");
 }
+
+
+DPCGI_NAMESPACE_END

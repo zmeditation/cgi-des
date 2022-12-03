@@ -21,31 +21,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
-#include "tests_pch.hh"
+#ifndef DESPAIR_CGI_QUERY_STRING_HH
+#define DESPAIR_CGI_QUERY_STRING_HH
+#include "def.h"
+#include "string.hh"
+#include <unordered_map>
 
+namespace dpcgi {
 
-TEST(dpcgi, complete_html_tag) {
-    dpcgi::tag htmlTag("html");
-    dpcgi::tag headTag("head");
-    dpcgi::tag bodyTag("body");
-    htmlTag.val(
-        headTag.str() + '\n' + bodyTag.str()
-    );
-    const dpcgi::string HtmlTagVal = 
-        "<head> </head>\n\n"
-        "<body> </body>\n"
-        ;
-    EXPECT_EQ(htmlTag.val(), HtmlTagVal);
-}
+class DPCGI_DLL_API query_string
+{
+public:
+    typedef std::unordered_map<string, string> string_table;
 
+    query_string() noexcept; ~query_string() noexcept;
 
-TEST(dpcgi, html_document) {
-    dpcgi::html_document doc;
-    auto tag_Html = dpcgi::tag("html");
-    auto tag_Head = dpcgi::tag("head");
-    auto tag_Body = dpcgi::tag("body");
+    inline const string_table& queries() const noexcept { return queries_; }
+    inline const char* raw() const noexcept { return raw_; }
+    inline size_t size() const noexcept { return queries_.size(); }
+    inline bool empty() const noexcept { return queries_.empty(); }
 
-    EXPECT_EQ(doc.add_tag(tag_Html), dpcgi::result::err_op_denied);
-    EXPECT_EQ(doc.add_tag(tag_Head), dpcgi::result::err_op_denied);
-    EXPECT_EQ(doc.add_tag(tag_Body), dpcgi::result::err_op_denied);
-}
+private:
+    string_table queries_;
+    const char* raw_;
+}; // class query_string
+
+} // namespace dpcgi
+
+#endif // !DESPAIR_CGI_QUERY_STRING_HH

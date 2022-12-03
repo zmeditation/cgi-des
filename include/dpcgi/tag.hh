@@ -24,6 +24,7 @@ SOFTWARE.
 #ifndef DESPAIR_CGI_TAG_HH
 #define DESPAIR_CGI_TAG_HH
 
+#include "def.h"
 #include "string.hh"
 #include <ostream>
 #include <vector>
@@ -35,10 +36,11 @@ enum class result : uint32_t {
     success = 0, err_op_denied    
 };
 
-
-
-class tag
+class DPCGI_DLL_API tag
 {
+    struct attribute { string name, value; };
+    typedef std::vector<attribute> attrib_table;
+    typedef std::vector<attribute>::iterator attrib_ptr;
 public:
     static tag parse(const string& wStr);
 
@@ -46,13 +48,14 @@ public:
     tag(const string& wName);
     virtual ~tag() noexcept;
 
-    void add_attrib(const string& wName, const string& wValue = "");
+    void add_attrib(const string& name, const string& nalue = "");
+    void add_child(const tag& child) noexcept { children_.push_back(&child); }
     string end() const noexcept;
 
     string str() const noexcept;
 
     inline const string& name() const noexcept { return name_; }
-    inline void name(const string& wName) noexcept { name_ = wName; }
+    inline void name(const string& name) noexcept { name_ = name; }
 
     inline const string& val() const noexcept { return val_; }
     inline void val(const string& wVal) noexcept { val_ = wVal; }
@@ -60,30 +63,36 @@ public:
     inline bool self_closed() const noexcept { return selfClosed_; }
     inline void self_closed(bool wYesNo) noexcept { selfClosed_ = wYesNo; }
 
+    attrib_ptr find_attrib(const string& name) noexcept;
+
     //$ EOL: if set, an EOL will be inserted to the end of ::str() result.
     inline bool eol() const noexcept { return hasEol_; }
-    inline void eol(bool wYesNo) noexcept { hasEol_ = wYesNo; }
+    inline void eol(bool YesNo) noexcept { hasEol_ = YesNo; }
+
+    inline bool is_child() const noexcept { return isChild_; }
+    inline void is_child(bool YesNo) noexcept { isChild_ = YesNo; }
     
     inline bool empty() const noexcept { return name_.empty(); }
     inline bool unnamed() const noexcept { return name_.empty(); }
+    inline bool null_attrib(const attrib_ptr& attrib) const noexcept {
+        return attrib == attribs_.end();
+    }
 
     friend std::ostream& operator<<(std::ostream&, const tag&);
 
 protected:
     string name_;
-    struct attribute { string name, value; };
     std::vector<attribute> attribs_;
     string val_;
+    std::vector<const tag*> children_;
     bool selfClosed_;
     bool hasEol_;
+    bool isChild_;
 };
-
 
 std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag);
 
-
 } // namespace dpcgi
-
 
 // std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag);
 

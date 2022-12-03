@@ -32,7 +32,7 @@ SOFTWARE.
 DPCGI_NAMESPACE_BEGIN
 
 
-query_string::query_string() noexcept : raw_(getenv("QUERY_STRING"))
+DPCGI_DLL_API query_string::query_string() noexcept : raw_(getenv("QUERY_STRING"))
 {
     if(raw_ == nullptr) return;
     std::istringstream iss(raw_);
@@ -50,7 +50,7 @@ query_string::query_string() noexcept : raw_(getenv("QUERY_STRING"))
 }
 
 
-query_string::~query_string() noexcept {}
+DPCGI_DLL_API query_string::~query_string() noexcept {}
 
 
 DPCGI_NAMESPACE_END
