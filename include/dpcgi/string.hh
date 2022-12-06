@@ -25,6 +25,26 @@ SOFTWARE.
 #define DESPAIR_CGI_STRING_HH
 #include <string>
 
-namespace dpcgi { typedef std::string string; } // namespace dpgci
+namespace dpcgi {
+
+typedef std::string                 string;
+typedef std::pair<string, string>   string_pair;
+
+inline string trim_str(const string& str) {
+    return str.substr(1u, str.length() - 1u);
+}
+
+//$ Split a string with format key=value.
+inline string_pair split_config_str(const string& str)
+{
+    auto EqPos = str.find('=');
+    if(EqPos != string::npos) return {
+        str.substr(0, EqPos),
+        str.substr(EqPos + 2u)
+    };
+    return {};
+}
+
+} // namespace dpgci
 
 #endif // !DESPAIR_CGI_STRING_HH

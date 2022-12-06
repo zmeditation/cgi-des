@@ -61,12 +61,9 @@ DPCGI_DLL_API string html_document::str() const noexcept
         "<body>\n"
         ;
     
-    for(const auto& tag : tags_)
-    {
-        if(tag.is_child()) oss << ' ';
+    for(const auto& tag : tags_) {
         oss << tag.str();
-    }
-    // endfor
+    } // endfor
 
     oss << "</body></html>\n";
 

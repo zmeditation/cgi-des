@@ -28,9 +28,19 @@ SOFTWARE.
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #define DPCGI_NAMESPACE_BEGIN   namespace dpcgi {
-#define DPCGI_NAMESPACE_END     }
+#define DPCGI_NAMESPACE_END     }    
+
+//$ Set tag attribute, same code for both lValue and rValue.
+#define dpcgi_tag_set_string(AttrName, AttrNameStr, AttrVal) \
+    if(AttrName.empty()) { \
+        this->_SUPER::add_attrib(AttrNameStr, AttrVal); \
+        return; \
+    } \
+    auto ptr = this->_SUPER::find_attrib(AttrNameStr); \
+    ptr->value = AttrVal;
 
 #endif // !DPCGI_PCH_HH

@@ -21,3 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
+#ifndef DESPAIR_CGI_IMG_HH
+#define DESPAIR_CGI_IMG_HH
+
+#include "tag.hh"
+
+namespace dpcgi {
+
+class DPCGI_DLL_API img : public tag
+{
+    typedef tag _SUPER;
+public:
+    img(); virtual ~img();
+
+    inline const string& src() const noexcept { return src_; }
+    void src(const string& Src) noexcept;
+    void src(string&& Src) noexcept;
+
+private:
+    string src_;
+};
+
+} // namespace dpcgi
+
+#endif // !DESPAIR_CGI_IMG_HH
