@@ -24,42 +24,98 @@ SOFTWARE.
 #include "dpcgi_pch.hh"
 #include "tag.hh"
 
+#define dpcgi_attribs_push_back(wName, wValue) attribs_.push_back({ wName, wValue });
+
+
+inline constexpr size_t SecondIndex = 1u;
+
 
 DPCGI_NAMESPACE_BEGIN //-----------------------------------------------------------------
 
 
-/*static*/ tag tag::parse(const string& wStr)
+/*static*/ DPCGI_DLL_API tag tag::parse(const string& wStr)
 {
-    const string Name = wStr.empty() ? "html" : "a";
-    return tag(Name);
+    tag ret;
+
+    if(wStr.at(0) != '<') {
+        ret.val(wStr);
+        return ret;
+    } // no_else
+
+    string tagName, tagVal;
+    const auto ClosingPos = wStr.rfind("</");
+    const auto FirstClosingAngularBracket = wStr.find('>');
+
+    if(ClosingPos != string::npos) {
+        tagName = wStr.substr(ClosingPos + 2u);
+        tagName.pop_back();
+        ret.name(std::move(tagName));
+    } else {
+        tagName = wStr.substr(SecondIndex, tagName.length() - 2u);
+        
+        ret.name(std::move(tagName));
+        ret.self_closed(true);
+    } // endif
+
+    const string TagProps = wStr.substr(1, FirstClosingAngularBracket);
+    std::istringstream iss(TagProps);
+    string tmp;
+    iss >> tmp;
+    while(iss >> tmp)
+    {
+        std::pair<string, string> pair = split_config_str(tmp);
+        //const auto EqPos = tmp.find('=');
+        //const string name = tmp.substr(0u, EqPos);
+        //string value = tmp.substr(EqPos + 2u);
+        
+        //$ last attribute may end with >, so remove it (and the closing quote too).
+        if(pair.second.back() != '>') pair.second.resize(pair.second.length() - 1u);
+        else pair.second.resize(pair.second.length() - 2u);
+        
+        ret.add_attrib(std::move(pair.first), std::move(pair.second));
+    }
+    // endwhile
+
+    tagVal = wStr.substr(
+        FirstClosingAngularBracket + 1u, ClosingPos - FirstClosingAngularBracket - 1u
+    );
+    ret.val(std::move(tagVal));
+
+    return ret;
 }
 
 
-tag::tag() noexcept : selfClosed_(false), hasEol_(true), isChild_(true) {}
+DPCGI_DLL_API tag::tag() noexcept : selfClosed_(false), hasEol_(true) {}
 
 
-tag::tag(const string& wName) : 
-    name_(wName), selfClosed_(false), hasEol_(true), isChild_(true)
+DPCGI_DLL_API tag::tag(const string& wName) : 
+    name_(wName), selfClosed_(false), hasEol_(true)
 {}
 
 
-/*virtual*/ tag::~tag() noexcept {}
+/*virtual*/ DPCGI_DLL_API tag::~tag() noexcept {}
 
 
-void tag::add_attrib(const string& wName, const string& wValue)
+DPCGI_DLL_API void tag::add_attrib(const string& wName, const string& wValue) noexcept
 {
-    attribs_.push_back({ wName, wValue });
+    dpcgi_attribs_push_back(wName, wValue);
 }
 
 
-string tag::end() const noexcept
+DPCGI_DLL_API void tag::add_attrib(string&& wName, string&& wValue) noexcept
 {
-    if(selfClosed_) return "";
+    dpcgi_attribs_push_back(wName, wValue);
+}
+
+
+DPCGI_DLL_API string tag::end() const noexcept
+{
+    if(selfClosed_ || name_.empty()) return "";
     return "</" + name_ + '>';
 }
 
 
-string tag::str() const noexcept
+DPCGI_DLL_API string tag::str() const noexcept
 {
     std::ostringstream oss;
 
@@ -67,21 +123,23 @@ string tag::str() const noexcept
 
     for(const auto& attrib : attribs_) {
         oss << ' ' << attrib.name << "=\"" << attrib.value << "\"";
-    }
+    } // endfor
     
-    if(selfClosed_) oss << " />"; else oss << '>';
+    if(selfClosed_) {
+        oss << " />";
+        if(this->hasEol_) oss << '\n';
+    } else {
+        oss << '>';
+        for(const auto& child : children_) oss << '\n' << child->str();
+        oss << val_ << this->end();
+        if(this->hasEol_) oss << '\n';
+    } // endif
 
-    for(const auto& child : children_) oss << "\n " << child->str();
-    oss << val_;
-    if(this->isChild_) oss << ' ';
-    oss << this->end();
-    if(this->hasEol_) oss << '\n';
-    
     return oss.str();
 }
 
 
-tag::attrib_ptr tag::find_attrib(const string& name) noexcept
+DPCGI_DLL_API tag::attrib_ptr tag::find_attrib(const string& name) noexcept
 {
     return std::find_if(attribs_.begin(), attribs_.end(), [&](const attribute& lAttrib){
         return (name == lAttrib.name);
@@ -89,7 +147,7 @@ tag::attrib_ptr tag::find_attrib(const string& name) noexcept
 }
 
 
-std::ostream& operator<<(std::ostream& wStream, const tag& wTag)
+DPCGI_DLL_API std::ostream& operator<<(std::ostream& wStream, const tag& wTag)
 {
     wStream << '<' << wTag.name_;
     for(auto& attrib : wTag.attribs_) {

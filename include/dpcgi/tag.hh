@@ -42,35 +42,39 @@ class DPCGI_DLL_API tag
     typedef std::vector<attribute> attrib_table;
     typedef std::vector<attribute>::iterator attrib_ptr;
 public:
-    static tag parse(const string& wStr);
+    //$ Parse a string for a tag, use with non-nested only.
+    static tag parse(const string& str);
 
     tag() noexcept;
-    tag(const string& wName);
+    tag(const string& name);
     virtual ~tag() noexcept;
 
-    void add_attrib(const string& name, const string& nalue = "");
+    tag(const tag&) = default;
+    tag(tag&&) = default;
+    tag& operator=(const tag&) = default;
+    tag& operator=(tag&&) = default;
+
+    void add_attrib(const string& lValNameLV, const string& lValValue) noexcept;
+    void add_attrib(string&& rValName, string&& rValValue) noexcept;
     void add_child(const tag& child) noexcept { children_.push_back(&child); }
-    string end() const noexcept;
+    virtual string end() const noexcept final;
 
-    string str() const noexcept;
+    virtual string str() const noexcept final;
 
-    inline const string& name() const noexcept { return name_; }
+    inline virtual const string& name() const noexcept final { return name_; }
     inline void name(const string& name) noexcept { name_ = name; }
+    inline void name(string&& name) noexcept { name_ = name; }
 
-    inline const string& val() const noexcept { return val_; }
-    inline void val(const string& wVal) noexcept { val_ = wVal; }
+    dpcgi_class_getset(tag, string, val, val_);
     
-    inline bool self_closed() const noexcept { return selfClosed_; }
-    inline void self_closed(bool wYesNo) noexcept { selfClosed_ = wYesNo; }
+    inline virtual bool self_closed() const noexcept final { return selfClosed_; }
+    inline void self_closed(bool YesNo) noexcept { selfClosed_ = YesNo; }
 
     attrib_ptr find_attrib(const string& name) noexcept;
 
     //$ EOL: if set, an EOL will be inserted to the end of ::str() result.
     inline bool eol() const noexcept { return hasEol_; }
     inline void eol(bool YesNo) noexcept { hasEol_ = YesNo; }
-
-    inline bool is_child() const noexcept { return isChild_; }
-    inline void is_child(bool YesNo) noexcept { isChild_ = YesNo; }
     
     inline bool empty() const noexcept { return name_.empty(); }
     inline bool unnamed() const noexcept { return name_.empty(); }
@@ -87,7 +91,6 @@ protected:
     std::vector<const tag*> children_;
     bool selfClosed_;
     bool hasEol_;
-    bool isChild_;
 };
 
 std::ostream& operator<<(std::ostream& wStream, const dpcgi::tag& wTag);
