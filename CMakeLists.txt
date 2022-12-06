@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 cmake_minimum_required(VERSION 3.18)
 if (MSVC)
     add_compile_options(/W4 /WX)
@@ -27,7 +28,7 @@ else()
 endif()
 
 
-set( CMAKE_CXX_STANDARD             11              )
+set( CMAKE_CXX_STANDARD             17              )
 set( CMAKE_CXX_STANDARD_REQUIRED    True            )
 set( CMAKE_FIND_LIBRARY_PREFIXES    "lib"           )
 set( CMAKE_FIND_LIBRARY_SUFFIXES    ".a;.dll.a;.so" )
@@ -43,6 +44,7 @@ endif()
 
 
 set( DPCGI_SHARED_LIB False CACHE BOOL "Build as shared/DLL library")
+set(BUILD_GMOCK False CACHE BOOL "Builds the googlemock subproject")
 set( DPCGI_SHARED_LIB_SPEC "STATIC" )
 
 if( ${DPCGI_SHARED_LIB} )
@@ -56,16 +58,17 @@ endfunction()
 
 project(despair-cgi VERSION 1.0) ########################################################
 set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
-message( CHECK_START "Configure Google Test" )
 
+
+message( CHECK_START "Configure Google Test" )
 add_subdirectory(googletest)
 group_target( gtest "gtest" )
 group_target( gtest_main "gtest" )
-group_target( gmock "gtest" )
-group_target( gmock_main "gtest" )
-
+if(BUILD_GMOCK)
+    group_target( gmock "gtest" )
+    group_target( gmock_main "gtest" )
+endif()
 message( CHECK_PASS "Done." )
-
 
 add_library( despair-cgi ${DPCGI_SHARED_LIB_SPEC}
     "src/cookie.cc"
@@ -87,8 +90,8 @@ target_include_directories( despair-cgi
 #########################################################################################
 
 add_executable( runtests
-    "tests/basic.cc"
     "tests/cookie.cc"
+    "tests/html_document.cc"
     "tests/query_string.cc"
     "tests/tag.cc"
 )
