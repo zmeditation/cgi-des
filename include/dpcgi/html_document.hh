@@ -36,14 +36,17 @@ class DPCGI_DLL_API html_document
     typedef html_document _THIS;
 public:
     html_document() noexcept; ~html_document() noexcept;
+    
+    html_document(const html_document&) = delete;
+    html_document& operator=(const html_document&) = delete;
 
-    result add_tag(const tag& wTag) noexcept;
-    result add_tag(tag&& wTag) noexcept;
+    result add_tag(const tag& tagLvalue) noexcept;
+    result add_tag(tag&& tagRvalue) noexcept;
     string str() const noexcept;
     
     const std::vector<cookie*>& cookies() const noexcept { return cookies_; }
     inline const string& title() const noexcept { return title_; }
-    inline void title(const string& wTitle) noexcept { title_ = wTitle; }
+    inline void title(const string& title) noexcept { title_ = title; }
 
 private:
     static const string CONTENT_TYPE_STR_;
@@ -56,6 +59,6 @@ private:
     string title_;
 };
 
-}
+} // namespace dpcgi
 
 #endif // !DESPAIR_CGI_HTML_DOCUMENT_HH
