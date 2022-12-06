@@ -28,20 +28,37 @@ SOFTWARE.
 DPCGI_NAMESPACE_BEGIN
 
 
-DPCGI_DLL_API form::form() noexcept : _SUPER("form"), submit_("input")
+DPCGI_DLL_API form::form() noexcept : _SUPER("form"), submit_("input"), hasMultipartData_(false)
 {
     submit_.add_attrib("type", "submit");
     this->_SUPER::add_child(submit_);
 }
 
 
-DPCGI_DLL_API form::~form ()noexcept {}
+DPCGI_DLL_API form::~form () noexcept {}
 
 
-void form::multipart_data() noexcept
+DPCGI_DLL_API void form::multipart_data() noexcept
 {
+    if(hasMultipartData_) return;
     this->_SUPER::add_attrib("enctype", "multipart/form-data");
+    hasMultipartData_ = true;
 }
+
+
+DPCGI_DLL_API void form::action(const string& Action) noexcept
+{
+    dpcgi_tag_set_string(action_, ATTR_ACTION_NAME_, Action);
+}
+
+
+DPCGI_DLL_API  void form::action(string&& Action) noexcept
+{
+    dpcgi_tag_set_string(action_, ATTR_ACTION_NAME_, Action);
+}
+
+
+/* static */ DPCGI_DLL_API const string form::ATTR_ACTION_NAME_ = "action";
 
 
 DPCGI_NAMESPACE_END

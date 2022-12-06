@@ -33,10 +33,20 @@ class DPCGI_DLL_API form : public tag
     typedef tag _SUPER;
 public:
     form() noexcept; ~form() noexcept;
-    void multipart_data() noexcept;    
+
+    inline bool has_multipart_data() const noexcept { return hasMultipartData_; }
+    void multipart_data() noexcept;
+
+    inline const string& action() const noexcept { return action_; }
+    void action(const string& Action) noexcept;
+    void action(string&& Action) noexcept;
 
 private:
+    static const string ATTR_ACTION_NAME_;
+
+    string action_;
     tag submit_;
+    bool hasMultipartData_;
 }; // class form
 
 } // namespace dpcgi
