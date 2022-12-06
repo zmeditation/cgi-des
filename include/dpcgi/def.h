@@ -36,4 +36,12 @@ SOFTWARE.
     #define DPCGI_EXPORT
 #endif // WIN32 || WIN64
 
+//$ Trivial getter/setter.
+#define dpcgi_class_getset(ClassName, AttrType, MethodName, AttrName) \
+    inline virtual const AttrType& MethodName() const noexcept final { \
+        return AttrName; \
+    } \
+    void MethodName(const AttrType& lVal) noexcept { AttrName = lVal; } \
+    void MethodName(AttrType&& rVal) noexcept { AttrName = rVal; }
+
 #endif // !DESPAIR_CGI_DEF_H
