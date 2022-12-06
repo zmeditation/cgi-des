@@ -36,8 +36,8 @@ class DPCGI_DLL_API cookie
 public:
     cookie() noexcept; ~cookie() noexcept;
 
-    void add_entry(const string& wName, const string& wValue) noexcept;
-    bool erase(const string& wName) noexcept;
+    void add_entry(const string& name, const string& value) noexcept;
+    bool erase(const string& name) noexcept;
 
     const entry_table& entries() const noexcept { return entries_; }
 
