@@ -21,10 +21,14 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.18)
-if (MSVC)
-    add_compile_options(/W4 /WX)
+if(MSVC)
+    message( STATUS "Added compiler options for MSVC" )
+    add_compile_options(/W4 /WALL /WX)
+elif(GNU)
+    message( STATUS "Added compiler options for GCC" )
+    add_compile_options(-Wall -Wconversion -Werror -Wextra -Wpedantic)
 else()
-    add_compile_options(-Wall -Wextra -Wconversion -pedantic -Werror)
+    message(WARNING "Unable to detect compiler!")
 endif()
 
 
@@ -57,7 +61,7 @@ endfunction()
 
 
 project(despair-cgi VERSION 1.0) ########################################################
-set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
+# set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
 
 
 message( CHECK_START "Configure Google Test" )
@@ -76,6 +80,7 @@ add_library( despair-cgi ${DPCGI_SHARED_LIB_SPEC}
     "src/html_document.cc"
     "src/query_string.cc"
     "src/tag.cc"
+    "src/tag_img.cc"
 )
 if( ${DPCGI_SHARED_LIB} )
     target_compile_definitions(despair-cgi PUBLIC DPCGI_EXPORT)
@@ -86,6 +91,7 @@ target_precompile_headers( despair-cgi
 target_include_directories( despair-cgi
     PUBLIC "include/dpcgi"
 )
+set_target_properties(despair-cgi PROPERTIES PUBLIC_HEADER include/dpcgi/*.hh)
 
 #########################################################################################
 

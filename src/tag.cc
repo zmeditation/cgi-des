@@ -24,7 +24,13 @@ SOFTWARE.
 #include "dpcgi_pch.hh"
 #include "tag.hh"
 
-#define dpcgi_attribs_push_back(wName, wValue) attribs_.push_back({ wName, wValue });
+#define dpcgi_tag_attribs_push_back(wName, wValue) attribs_.push_back({ wName, wValue });
+
+#define dpcgi_tag_set_id(wId) \
+    if(this->has_no_id()) { \
+        this->add_attrib("id", wId); \
+        idAttribIndex_ = attribs_.size() - 1u; \
+    } else attribs_[idAttribIndex_].value = wId;
 
 
 inline constexpr size_t SecondIndex = 1u;
@@ -85,11 +91,13 @@ DPCGI_NAMESPACE_BEGIN //--------------------------------------------------------
 }
 
 
-DPCGI_DLL_API tag::tag() noexcept : selfClosed_(false), hasEol_(true) {}
+DPCGI_DLL_API tag::tag() noexcept : 
+    idAttribIndex_(string::npos), selfClosed_(false), hasEol_(true)
+{}
 
 
 DPCGI_DLL_API tag::tag(const string& wName) : 
-    name_(wName), selfClosed_(false), hasEol_(true)
+    name_(wName), idAttribIndex_(string::npos), selfClosed_(false), hasEol_(true)
 {}
 
 
@@ -98,13 +106,13 @@ DPCGI_DLL_API tag::tag(const string& wName) :
 
 DPCGI_DLL_API void tag::add_attrib(const string& wName, const string& wValue) noexcept
 {
-    dpcgi_attribs_push_back(wName, wValue);
+    dpcgi_tag_attribs_push_back(wName, wValue);
 }
 
 
 DPCGI_DLL_API void tag::add_attrib(string&& wName, string&& wValue) noexcept
 {
-    dpcgi_attribs_push_back(wName, wValue);
+    dpcgi_tag_attribs_push_back(wName, wValue);
 }
 
 
@@ -136,6 +144,18 @@ DPCGI_DLL_API string tag::str() const noexcept
     } // endif
 
     return oss.str();
+}
+
+
+DPCGI_DLL_API void tag::id(const string& newId) noexcept
+{
+    dpcgi_tag_set_id(newId);
+}
+
+
+DPCGI_DLL_API void tag::id(string&& newId) noexcept
+{
+    dpcgi_tag_set_id(newId);
 }
 
 

@@ -37,7 +37,7 @@ SOFTWARE.
 #endif // WIN32 || WIN64
 
 //$ Trivial getter/setter.
-#define dpcgi_class_getset(ClassName, AttrType, MethodName, AttrName) \
+#define dpcgi_class_getset(AttrType, MethodName, AttrName) \
     inline virtual const AttrType& MethodName() const noexcept final { \
         return AttrName; \
     } \

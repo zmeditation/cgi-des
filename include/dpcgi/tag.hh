@@ -65,12 +65,20 @@ public:
     inline void name(const string& name) noexcept { name_ = name; }
     inline void name(string&& name) noexcept { name_ = name; }
 
-    dpcgi_class_getset(tag, string, val, val_);
+    inline string id() const noexcept {
+        return idAttribIndex_ != string::npos ? attribs_[idAttribIndex_].value : "";
+    }
+    void id(const string& newId) noexcept;
+    void id(string&& newId) noexcept;
+
+    dpcgi_class_getset(string, val, val_);
     
     inline virtual bool self_closed() const noexcept final { return selfClosed_; }
     inline void self_closed(bool YesNo) noexcept { selfClosed_ = YesNo; }
 
     attrib_ptr find_attrib(const string& name) noexcept;
+
+    inline bool has_no_id() const noexcept { return idAttribIndex_ == string::npos; }
 
     //$ EOL: if set, an EOL will be inserted to the end of ::str() result.
     inline bool eol() const noexcept { return hasEol_; }
@@ -86,6 +94,7 @@ public:
 
 protected:
     string name_;
+    size_t idAttribIndex_;
     std::vector<attribute> attribs_;
     string val_;
     std::vector<const tag*> children_;

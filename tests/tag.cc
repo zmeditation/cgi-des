@@ -62,11 +62,33 @@ TEST(tag, html_empty) {
 }
 
 
+#define TEST_TAG_ID_RVALUE "rvalue_fancy_id"
+TEST(tag, id) {
+    const struct {
+        dpcgi::string name = "span";
+        dpcgi::string end = "</" + name + ">";
+        dpcgi::string emptyStr = "";
+        dpcgi::string lValueStr = "lvalue_str";
+    } should_be;
+    dpcgi::tag myTag(should_be.name);
+    EXPECT_EQ(myTag.name(), should_be.name);
+    EXPECT_EQ(myTag.end(), should_be.end);
+    EXPECT_EQ(myTag.id(), should_be.emptyStr);
+    EXPECT_TRUE(myTag.has_no_id());
+
+    myTag.id(TEST_TAG_ID_RVALUE);
+    EXPECT_EQ(myTag.id(), TEST_TAG_ID_RVALUE);
+
+    myTag.id(should_be.lValueStr);
+    EXPECT_EQ(myTag.id(), should_be.lValueStr);
+}
+
+
 #define TAG_IMG_NAME_BEG        "img"
-#define TAG_IMG_NAME_END        "</" TAG_IMG_NAME_BEG ">"
+#define TAG_IMG_NAME_END        ("</" TAG_IMG_NAME_BEG ">")
 #define TAG_IMG_ATTR_SRC_NAME   "src"
 #define TAG_IMG_ATTR_SRC_VAL    "http://img.co/star.png"
-TEST(tag, img) {
+TEST(tag, name_is_img) {
     const dpcgi::string AttrSrcName = TAG_IMG_ATTR_SRC_NAME;
     const struct {
         dpcgi::string imgTagName = TAG_IMG_NAME_BEG;
@@ -86,7 +108,7 @@ TEST(tag, img) {
 }
 
 
-TEST(tag, form) {
+TEST(tag, name_is_form) {
     dpcgi::form emptyForm;
     EXPECT_EQ(emptyForm.name(), "form");
     EXPECT_EQ(emptyForm.end(), "</form>");
@@ -119,4 +141,12 @@ TEST(tag, val) {
         "<body></body>\n"
         ;
     EXPECT_EQ(htmlTag.val(), HtmlTagVal);
+}
+
+
+TEST(tag, tag_img) {
+    dpcgi::tag_img imgTag;
+    EXPECT_EQ(imgTag.name(), TAG_IMG_NAME_BEG);
+    EXPECT_EQ(imgTag.end(), TAG_IMG_NAME_END);
+    EXPECT_TRUE(imgTag.val().empty());
 }

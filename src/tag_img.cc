@@ -22,22 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
 #include "dpcgi_pch.hh"
-#include "img.hh"
+#include "tag_img.hh"
 
 
 DPCGI_NAMESPACE_BEGIN
 
 
-img::img() {} /*virtual*/ img::~img() {}
+tag_img::tag_img() : _SUPER("img") {} /*virtual*/ tag_img::~tag_img() {}
 
 
-void img::src(const string& Src) noexcept
+void tag_img::src(const string& Src) noexcept
 {
     dpcgi_tag_set_string(src_, "src", Src);
 }
 
 
-void img::src(string&& Src) noexcept
+void tag_img::src(string&& Src) noexcept
 {
     dpcgi_tag_set_string(src_, "src", Src);
 }

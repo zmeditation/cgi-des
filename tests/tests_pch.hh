@@ -29,6 +29,7 @@ SOFTWARE.
 #include <form.hh>
 #include <html_document.hh>
 #include <query_string.hh>
+#include <tag_img.hh>
 //#include <tag.hh>
 
 #endif // !DESPAIR_CGI_TESTS_PCH_HH

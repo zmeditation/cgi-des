@@ -28,11 +28,11 @@ SOFTWARE.
 
 namespace dpcgi {
 
-class DPCGI_DLL_API img : public tag
+class DPCGI_DLL_API tag_img : public tag
 {
     typedef tag _SUPER;
 public:
-    img(); virtual ~img();
+    tag_img(); virtual ~tag_img();
 
     inline const string& src() const noexcept { return src_; }
     void src(const string& Src) noexcept;

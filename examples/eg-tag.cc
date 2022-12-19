@@ -22,13 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ****************************************************************************************/
 #include <tag.hh>
+#include <tag_img.hh>
 #include <iostream>
 
 int main()
 {
     dpcgi::tag myTag("img");
     myTag.add_attrib("src", "http://img.co/star.png");
-    std::cout << myTag.str() << '\n';
+    std::cout << "- " << myTag.str() << '\n';
+
+    dpcgi::tag_img imgTag;
+    imgTag.src("http://img.co/neko.jpg");
+    std::cout << "- " << imgTag.str() << '\n';
 
     return 0;
 }

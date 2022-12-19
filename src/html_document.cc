@@ -56,8 +56,12 @@ DPCGI_DLL_API string html_document::str() const noexcept
     oss << 
         _THIS::CONTENT_TYPE_STR_ <<
         "<html>\n" <<
-        "<head>\n " << 
-        "<title>" << title_ << "</title>" << "</head>\n" <<
+        "<head>\n "
+        ;
+    if(charSet_.length()) {
+        oss << " <meta charset=\"" << charSet_ << "\" />\n";
+    } // no_else
+    oss << "<title>" << title_ << "</title>" << "</head>\n" <<
         "<body>\n"
         ;
     

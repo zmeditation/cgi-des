@@ -42,11 +42,14 @@ public:
 
     result add_tag(const tag& tagLvalue) noexcept;
     result add_tag(tag&& tagRvalue) noexcept;
+    
     string str() const noexcept;
     
-    const std::vector<cookie*>& cookies() const noexcept { return cookies_; }
-    inline const string& title() const noexcept { return title_; }
-    inline void title(const string& title) noexcept { title_ = title; }
+    typedef std::vector<cookie*> cookie_table;
+    const cookie_table& cookies() const noexcept { return cookies_; }
+
+    dpcgi_class_getset(string, char_set, charSet_);
+    dpcgi_class_getset(string, title, title_);
 
 private:
     static const string CONTENT_TYPE_STR_;
@@ -54,9 +57,10 @@ private:
     static bool tagIsForbidden(const tag& wTag);
     static const std::set<string> forbiddenTags_;
 
-    std::vector<cookie*> cookies_;
-    std::vector<tag> tags_;
+    string charSet_;
     string title_;
+    cookie_table cookies_;
+    std::vector<tag> tags_;
 };
 
 } // namespace dpcgi
